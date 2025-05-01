@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
-// Ton écran de connexion
-import './auth/SplashScreen.dart';
-import './auth/login_screen.dart';
+import 'package:obesetechapp/auth/login_screen.dart';
+import 'package:obesetechapp/auth/onboarding_screen.dart';
+import 'package:obesetechapp/auth/signup_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      title: 'Obesetech',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/login',
       routes: {
-        '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const OnboardingScreen(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   bool isPasswordVisible = false;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -21,7 +23,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  void signUp() {
+  void signUp() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
@@ -40,17 +42,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       return;
     }
 
-    // Logique d'inscription ici, comme une API pour créer un compte
+    setState(() {
+      isLoading = true;
+    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Inscription réussie")),
-    );
+    try {
+      await ApiService.signup(email, password);
 
-    // Vous pouvez naviguer vers l'écran principal après l'inscription réussie
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const HomeScreen()),
-    // );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Inscription réussie")),
+      );
+
+      Navigator.pop(context); // Return to login screen
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() {
+ isLoading = false;
+      });
+    }
   }
 
   @override
@@ -58,7 +70,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Créer un compte"),
-        backgroundColor: Colors.blue,  // AppBar en bleu
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -66,7 +78,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           children: [
             Center(
               child: Image.asset(
-                'lib/logo.png', // Chemin du logo
+                'assets/logo.png',
                 width: 150,
                 height: 150,
               ),
@@ -82,32 +94,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            // Champ email
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue),  // Bordure bleue
+                border: Border.all(color: Colors.blue),
                 color: Colors.white,
               ),
               child: TextField(
                 controller: emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Email",
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            // Champ mot de passe
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue),  // Bordure bleue
+                border: Border.all(color: Colors.blue),
                 color: Colors.white,
               ),
               child: TextField(
@@ -129,60 +139,47 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            // Champ confirmation mot de passe
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue),  // Bordure bleue
+                border: Border.all(color: Colors.blue),
                 color: Colors.white,
               ),
               child: TextField(
                 controller: confirmPasswordController,
                 obscureText: !isPasswordVisible,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Confirmer le mot de passe",
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 ),
               ),
             ),
             const SizedBox(height: 24),
-            // Bouton d'inscription
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: signUp,
+                onPressed: isLoading ? null : signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Couleur du bouton en bleu
+                  backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text(
-                  "S'inscrire",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // Lien vers l'écran de connexion
-            SizedBox(
-              width: double.infinity,
-              child: TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  "Déjà un compte ? Se connecter",
-                  style: TextStyle(fontSize: 16, color: Colors.blue),  // Texte du bouton en bleu
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Créer un compte",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
               ),
             ),
           ],
         ),
       ),
-      backgroundColor: const Color(0xFFF3F4F6),
     );
   }
 }

@@ -1,6 +1,6 @@
 name: obesetechapp
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: 'none' # Remove this line if you want to publish to pub.dev
 version: 1.0.0+1
 
 environment:
@@ -9,7 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    google_fonts: ^2.3.2
+  http: ^1.3.0
+  flutter_secure_storage: ^9.0.0
   cupertino_icons: ^1.0.8
   intl: ^0.20.2
   fl_chart: ^0.64.0
@@ -24,6 +25,7 @@ dev_dependencies:
   flutter_lints: ^3.0.1
 
 flutter:
+  uses-material-design: true
   assets:
     - lib/logo.png
     - lib/zt.jpg
@@ -37,7 +39,3 @@ flutter:
     - lib/splash.jpg
     - lib/sch.jpg
     - lib/frz.jpg
-  uses-material-design: true
-
-
-
