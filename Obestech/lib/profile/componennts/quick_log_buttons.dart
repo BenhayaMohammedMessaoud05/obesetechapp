@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class QuickLogButtons extends StatelessWidget {
-  const QuickLogButtons({super.key});
+  const QuickLogButtons({super.key, required String token, required Future<Null> Function() onLog});
 
   @override
   Widget build(BuildContext context) {

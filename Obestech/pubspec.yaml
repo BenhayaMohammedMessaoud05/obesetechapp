@@ -10,6 +10,11 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.3.0
+  jwt_decoder: ^2.0.1
+  animate_do: ^3.3.4  # Latest version as of now, check pub.dev for updates
+  provider: ^6.1.2
+  shared_preferences: ^2.2.3 
+  fluttertoast: ^8.0.9 
   flutter_secure_storage: ^9.0.0
   cupertino_icons: ^1.0.8
   intl: ^0.20.2
@@ -18,6 +23,7 @@ dependencies:
   google_fonts: ^6.2.1
   lucide_icons: ^0.257.0
   percent_indicator: ^4.2.5
+
 
 dev_dependencies:
   flutter_test:
@@ -39,3 +45,4 @@ flutter:
     - lib/splash.jpg
     - lib/sch.jpg
     - lib/frz.jpg
+    - lib/last.jpg

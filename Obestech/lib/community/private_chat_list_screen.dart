@@ -28,7 +28,7 @@ class PrivateChatListScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ChatRoomScreen(title: contact['name']),
+                builder: (_) => ChatRoomScreen(title: contact['name'], token: '',),
               ),
             );
           },

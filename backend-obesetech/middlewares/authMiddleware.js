@@ -1,26 +1,20 @@
-// middlewares/authMiddleware.js
-
 const jwt = require('jsonwebtoken');
 
 const authenticateToken = (req, res, next) => {
-  // Récupérer le token du header Authorization
-  const token = req.header('Authorization')?.split(' ')[1]; // Supposons que le token soit dans "Authorization: Bearer <token>"
+  const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(403).json({ msg: 'Accès refusé, token manquant' });
+    return res.status(401).json({ message: 'Aucun token, autorisation refusée' });
   }
 
   try {
-    // Vérifier le token avec la clé secrète (assurez-vous que la clé est dans le .env)
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Attacher l'utilisateur décodé à la requête
-    req.user = decoded;
-
-    // Passer au middleware suivant
+    req.user = { id: decoded.id };
+    console.log('Middleware: Token verified, user ID:', req.user.id);
     next();
   } catch (err) {
-    return res.status(403).json({ msg: 'Token invalide ou expiré' });
+    console.error('Middleware: Token verification error:', err);
+    res.status(401).json({ message: 'Token invalide' });
   }
 };
 

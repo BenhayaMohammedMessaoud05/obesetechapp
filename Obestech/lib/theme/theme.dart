@@ -7,7 +7,9 @@ class AppColors {
   static const Color cardBackground = Colors.white;
   static const Color textPrimary = Colors.black;
   static const Color textSecondary = Colors.grey;
-  static const Color accent = Color(0xFF4CAF50); // For highlights
+  static const Color accent = Color(0xFF4CAF50);
+
+  static var grey; // For highlights
 }
 
 class AppTextStyles {
@@ -33,6 +35,14 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
   );
+
+  static var subtitle;
+
+  static var title;
+
+  static var notificationBadge;
+
+  static var labelBold;
 }
 
 // ✅ ADD THIS:

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:obesetechapp/profile/componennts/quick_log_buttons.dart';
 import 'package:obesetechapp/profile/componennts/workout_card.dart';
 import 'package:obesetechapp/profile/componennts/achievements_list.dart';
-
 import '../../models/achievement.dart';
 
 class WorkoutFormScreen extends StatelessWidget {
@@ -36,14 +34,13 @@ class WorkoutFormScreen extends StatelessWidget {
               onStart: () => debugPrint('Workout started!'),
             ),
             const SizedBox(height: 20),
-            const QuickLogButtons(),
             const SizedBox(height: 24),
             Text(
               'Achievements',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
-            AchievementsList(achievements: achievements),
+            AchievementsList(token: '', achievements: achievements),
           ],
         ),
       ),

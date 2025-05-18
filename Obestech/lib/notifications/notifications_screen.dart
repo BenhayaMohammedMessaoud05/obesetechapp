@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatelessWidget {
-  const NotificationsScreen({super.key});
+  const NotificationsScreen({super.key, List? notifications});
 
   final List<Map<String, String>> notifications = const [
     {

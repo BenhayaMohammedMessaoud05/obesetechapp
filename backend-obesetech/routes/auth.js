@@ -2,72 +2,104 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { authenticateToken } = require('../middlewares/authMiddleware');
+
 const router = express.Router();
 
-// Signup Route
+// ✅ Route d'inscription
 router.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password, weight, bmi, height, role } = req.body;
+
+  if (!name || !email || !password || !role) {
+    return res.status(400).json({ msg: 'Nom, email, mot de passe et rôle sont obligatoires.' });
+  }
 
   try {
-    // Check if user already exists
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ message: 'User already exists' });
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ msg: 'Utilisateur déjà existant' });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
-    user = new User({
+    const newUser = new User({
+      name,
       email,
       password: hashedPassword,
-      role: 'Patient',
+      weight,
+      bmi,
+      height,
+      role: role || 'Patient',
     });
 
-    await user.save();
-
-    // Generate JWT
-    const payload = { userId: user._id, role: user.role };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.status(201).json({ token, role: user.role });
+    await newUser.save();
+    res.status(201).json({ msg: 'Utilisateur créé avec succès' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Erreur lors de la création du compte :', error);
+    res.status(500).json({ msg: 'Erreur du serveur' });
   }
 });
 
-// Login Route
+// ✅ Route de connexion
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(400).json({ msg: 'Email et mot de passe sont requis' });
+  }
+
   try {
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ msg: 'Utilisateur non trouvé' });
     }
 
-    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ msg: 'Mot de passe incorrect' });
     }
 
-    // Ensure role is Patient
-    if (user.role !== 'Patient') {
-      return res.status(400).json({ message: 'Invalid role' });
-    }
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
-    // Generate JWT
-    const payload = { userId: user._id, role: user.role };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.json({ token, role: user.role });
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ msg: 'Erreur du serveur' });
   }
 });
 
+// ✅ Route protégée : profil utilisateur
+router.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'Utilisateur non trouvé' });
+    }
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      weight: user.weight,
+      bmi: user.bmi,
+      height: user.height,
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du profil :', error);
+    res.status(500).json({ msg: 'Erreur du serveur' });
+  }
+});
+
+console.log('Auth router ready');
 module.exports = router;

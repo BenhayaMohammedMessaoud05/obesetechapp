@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 import 'package:obesetechapp/profile/componennts/step_summary_card.dart';
 import 'package:obesetechapp/profile/componennts/weekly_activity_chart.dart';

@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { authenticateToken } = require('../middlewares/authMiddleware'); // Importer le middleware
+const { authenticateToken } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
@@ -74,8 +74,7 @@ router.post('/login', async (req, res) => {
 // Route pour récupérer le profil de l'utilisateur (protégée par JWT)
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
-    // L'utilisateur est authentifié, donc on peut récupérer son profil
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).select('-password');
     if (!user) {
       return res.status(400).json({ msg: 'Utilisateur non trouvé' });
     }

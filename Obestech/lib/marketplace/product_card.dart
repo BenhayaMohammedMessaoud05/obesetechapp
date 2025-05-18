@@ -13,10 +13,10 @@ class ProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ListTile(
-        leading: const Icon(Icons.shopping_basket, color: Colors.teal, size: 32),
+        leading: const Icon(Icons.shopping_basket, color: Color.fromARGB(255, 0, 97, 150), size: 32),
         title: Text(product.title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(product.description),
-        trailing: Text(product.category, style: const TextStyle(color: Colors.teal)),
+        trailing: Text(product.category, style: const TextStyle(color: Color.fromARGB(255, 0, 102, 150))),
       ),
     );
   }

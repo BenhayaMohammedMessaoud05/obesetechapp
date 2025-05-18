@@ -28,7 +28,7 @@ class GroupListScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ChatRoomScreen(title: group['title']),
+                builder: (_) => ChatRoomScreen(title: group['title'], token: '',),
               ),
             );
           },

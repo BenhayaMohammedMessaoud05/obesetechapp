@@ -1,8 +1,8 @@
 // 📁 lib/dashboard/medecin_dashboard.dart
-
+import 'user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import '../community/community_screen.dart';
-import '../profile/user_profile_screen.dart';
+
 import '../widgets/bottom_nav_bar.dart';
 
 class MedecinDashboard extends StatefulWidget {
@@ -17,7 +17,7 @@ class _MedecinDashboardState extends State<MedecinDashboard> {
 
   final List<Widget> _screens = const [
     CommunityScreen(),
-    UserProfileScreen(),
+    UserProfileScreen(token: '',),
   ];
 
   void _onTap(int index) {
